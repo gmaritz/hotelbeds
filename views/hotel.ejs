@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hotel Results</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+  <style>
+    .swiper {
+      width: 100%;
+      padding-bottom: 20px;
+    }
+    .swiper-slide img {
+      width: 95%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .swiper-slide img:hover {
+      transform: scale(1.05);
+    }
+    .swiper-button-prev, .swiper-button-next {
+      color: #000;
+    }
+    .hotel {
+      border: 1px solid #ddd;
+      padding: 0.5rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+
+<body class="container py-5">
+
+  <form id="hotel-selection-form" method="POST" action="/book">
+  <input type="hidden" name="bookingData" id="bookingData">
+
+  <% hotels.forEach(hotel => { %>
+    <div class="hotel">
+      <h3><%= hotel.name %></h3>
+      <p><%= hotel.description %></p>
+
+      <!-- Swiper Carousel -->
+      <div class="swiper mySwiper swiper-<%= hotel.code %>">
+        <div class="swiper-wrapper">
+          <% hotel.images.forEach(image => { %>
+            <% if (image.path) { %>
+              <div class="swiper-slide">
+                <img src="https://photos.hotelbeds.com/giata/<%= image.path %>"   alt="Hotel image">
+              </div>
+            <% } %>
+          <% }) %>
+        </div>
+        <div class="swiper-button-next swiper-button-<%= hotel.code %>"></div>
+        <div class="swiper-button-prev swiper-button-<%= hotel.code %>"></div>
+      </div>
+
+      <h5>Price from: <%= hotel.price %> <%= hotel.currency %></h5>
+
+    <% if (hotel.rooms && hotel.rooms.length > 0) { %>
+
+        <div class="hotel border p-4 rounded mb-4 bg-light" data-hotel-code="<%= hotel.code %>">
+          <h4 class="text-primary"><%= hotel.name %></h4>    
+
+          <% hotel.rooms.forEach(room => { %>
+            <div class="room mt-4 p-3 border rounded bg-light">
+              <h5 class="text-primary"><%= room.description %></h5>
+
+              <% if (room.rates && room.rates.length > 0) { %>
+                <% room.rates.forEach((rate, idx) => {
+                  const rateId = `rate-${hotel.code}-${room.roomCode}-${idx}`;
+           
+                  // Precompute cancellation logic
+                  let freeCancellationDeadline = null;
+                  let earliestFeePolicy = null;
+                  rate.cancellationPolicies?.forEach(policy => {
+                    const amount = parseFloat(policy.amount);
+                    if (amount === 0) {
+                      if (!freeCancellationDeadline || new Date(policy.from) > new Date(freeCancellationDeadline)) {
+                        freeCancellationDeadline = policy.from;
+                      }
+                    }
+                    if (!earliestFeePolicy || new Date(policy.from) < new Date(earliestFeePolicy)) {
+                      earliestFeePolicy = policy.from;
+                    }
+                  });
+                  const cutoffDate = freeCancellationDeadline || earliestFeePolicy;
+                  const paidPolicies = rate.cancellationPolicies?.filter(policy =>
+                    new Date(policy.from) >= new Date(cutoffDate) && parseFloat(policy.amount) > 0
+                  );
+                %>
+
+                  <div class="form-check mb-3">
+                    <input 
+                      class="form-check-input hotel-checkbox" 
+                      type="checkbox" 
+                      name="selectedRate" 
+                      id="<%= rateId %>" 
+                      data-hotel="<%= hotel.code %>"
+                      value='<%- JSON.stringify({
+                        hotelCode: hotel.code,
+                        hotelName: hotel.name,
+                        roomCode: room.code || room.roomCode,
+                        roomName: room.description,
+                        boardName: rate.boardName,
+                        rateKey: rate.rateKey,
+                        net: rate.net,
+                        currency: rate.currency,
+                        refundable: rate.refundable
+                      }) %>'>
+
+                    <label class="form-check-label" for="<%= rateId %>">
+                      <strong><%= rate.boardName %></strong> –
+                      <%= rate.currency %> <%= parseFloat(rate.net).toFixed(2) %>
+                      <% if (rate.refundable) { %>
+                        <span class="text-success">(Refundable)</span>
+                      <% } else { %>
+                        <span class="text-danger">(Non-refundable)</span>
+                      <% } %>
+                    </label>
+
+                    <% if (room.roomFacilities?.length > 0) { %>
+                      <h6 class="mt-2">Room-specific Facilities:</h6>
+                      <ul class="small ms-3">
+                        <% room.roomFacilities.forEach(f => { %>
+                          <li><%= f %></li>
+                        <% }) %>
+                      </ul>
+                    <% } else { %>
+                      <p class="small text-muted">No room-specific facilities listed.</p>
+                    <% } %>
+
+                    <% if (freeCancellationDeadline) { %>
+                      <p><strong>Free cancellation until:</strong> <%= new Date(freeCancellationDeadline).toLocaleString() %></p>
+                    <% } else if (earliestFeePolicy) { %>
+                      <p><strong>Cancellation fee applies after:</strong> <%= new Date(earliestFeePolicy).toLocaleString() %></p>
+                    <% } %>
+
+                    <% if (paidPolicies?.length > 0) { %>
+                      <p><strong>Cancellation fees after deadline:</strong></p>
+                      <ul class="small ms-3">
+                        <% paidPolicies.forEach(policy => { %>
+                          <li>From <%= new Date(policy.from).toLocaleString() %>: <%= rate.currency %> <%= parseFloat(policy.amount).toFixed(2) %></li>
+                        <% }) %>
+                      </ul>
+                    <% } %>
+                  </div>
+                <% }) %>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>     
+    <% } %>
+
+      <% if (hotel.hotelWideFacilities && hotel.hotelWideFacilities.length > 0) { %>
+          <div class="mt-3">
+            <strong>Hotel-wide Room Facilities:</strong>
+              <ul>
+                <% hotel.hotelWideFacilities.forEach(function(facility) { %>
+                  <li><%= facility %></li>
+                <% }) %>
+              </ul>
+                <% } else { %>
+                  <p>No hotel-specific facilities listed.</p>
+          </div>
+      <% } %>
+
+      <% if (hotel.facilities && hotel.facilities.length > 0) { %>
+          <div class="facilities mt-3">
+            <strong>Facilities:</strong>
+              <ul>
+                <% hotel.facilities.forEach(fac => { %>
+                  <%= typeof fac.description === 'object' ? fac.description.content : fac.    description || "Unnamed facility" %>
+                <% }) %>
+              </ul>
+          </div>
+      <% } %>
+
+    </div>
+  <% }) %>
+  <div class="text-center mt-4">
+    <button type="button" class="btn btn-success" onclick="submitHotelSelection()">Book Selected Option</button>
+  </div>
+</form>
+
+
+  <!-- JS Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- Swiper Initialization -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const swipers = document.querySelectorAll(".swiper");
+      swipers.forEach((swiperEl) => {
+        const hotelCode = swiperEl.classList[2]?.split("-")[1];
+        new Swiper(".swiper-" + hotelCode, {
+          slidesPerView: 3,
+          spaceBetween: 0,
+          navigation: {
+            nextEl: ".swiper-button-" + hotelCode + ".swiper-button-next",
+            prevEl: ".swiper-button-" + hotelCode + ".swiper-button-prev",
+          },
+          breakpoints: {
+            768: { slidesPerView: 4, spaceBetween: 0 },
+            1024: { slidesPerView: 5, spaceBetween: 0 }
+          }
+        });
+      });
+    });
+  </script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll('.hotel-checkbox');
+
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', () => {
+        const selectedHotel = cb.dataset.hotel;
+
+        if (cb.checked) {
+          // When checking a box, disable all checkboxes from other hotels
+          checkboxes.forEach(box => {
+            if (box.dataset.hotel !== selectedHotel) {
+              box.disabled = true;
+              box.closest('.form-check').classList.add('opacity-50'); // Optional styling
+            }
+          });
+        } else {
+          // If all checkboxes from that hotel are unchecked, re-enable everything
+          const stillCheckedInHotel = Array.from(checkboxes).some(
+            b => b.dataset.hotel === selectedHotel && b.checked
+          );
+
+          if (!stillCheckedInHotel) {
+            checkboxes.forEach(box => {
+              box.disabled = false;
+              box.closest('.form-check').classList.remove('opacity-50');
+            });
+          }
+        }
+      });
+    });
+  });
+
+
+  function submitHotelSelection() {
+    // const selected = Array.from(document.querySelectorAll('input[name="selectedRate"]:checked'))
+    //   .map(input => JSON.parse(input.value));
+
+    const checkedInputs = document.querySelectorAll('input[name="selectedRate"]:checked');
+  console.log('Checked inputs:', checkedInputs.length);
+  checkedInputs.forEach(input => console.log('Checkbox value:', input.value));
+
+  const selected = Array.from(checkedInputs).map(input => {
+    try {
+      return JSON.parse(input.value);
+    } catch (e) {
+      console.log('Invalid JSON in checkbox value:', input.value);
+      return null;
+    }
+  });
+
+    console.log('Selected:', selected[0]);
+
+    if (selected.length === 0) {
+      alert('Please select at least one room option to proceed.');
+      return;
+    }
+
+    // Check if rateKey is present
+    if (!selected[0].rateKey) {
+      alert('Error: Selected rate does not have a rateKey. Please try again.');
+      return;
+    }
+
+    const confirmMsg = selected.map(rate =>
+      `${rate.hotelName} – ${rate.roomName} (${rate.boardName}) for ${rate.currency} ${parseFloat(rate.net).toFixed(2)}`
+    ).join('\n');
+
+    if (!confirm("Confirm booking:\n\n" + confirmMsg)) return;
+
+    // Set booking data and submit
+    document.getElementById('bookingData').value = JSON.stringify(selected);
+    document.getElementById('hotel-selection-form').submit();
+
+    // alert(`You selected:\n` + selected.map(rate => (
+    //   `${rate.hotelName} – ${rate.roomName} (${rate.boardName}) for ${rate.currency} ${parseFloat(rate.net).toFixed(2)}`
+    // )).join('\n'));
+  }
+</script>
+
+</body>
+</html>

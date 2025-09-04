@@ -1,0 +1,184 @@
+const mongoose = require('mongoose');
+
+const hotelSchema = new mongoose.Schema({
+  code: { type: Number, required: true },
+  name: {
+    content: { type: String, required: true },
+  },
+  descriptions: [
+    {
+      content: { type: String }
+    }
+  ],
+  rooms: [
+  {
+    code: String,
+    name: String,
+    rates: [
+      {
+        boardName: String,
+        currency: String,
+        net: String,
+        refundable: Boolean,
+        cancellationPolicies: [mongoose.Schema.Types.Mixed],
+        rateComments: String,
+        offers: [mongoose.Schema.Types.Mixed],
+        taxes: [mongoose.Schema.Types.Mixed]
+      }
+    ]
+  }
+],
+  images: [mongoose.Schema.Types.Mixed],      // Store full image objects
+
+  // images: [
+  //   {
+  //     path: { type: String, required: true },
+  //     type: { type: String, default: '' },
+  //     order: { type: Number, default: 0 },
+  //   },
+  // ],
+  facilities: [mongoose.Schema.Types.Mixed],  // Store full facility objects
+
+  // facilities: [
+  //   {
+  //     facilityCode: { type: Number },
+  //     facilityGroupCode: { type: Number },
+  //     description: { type: String },
+  //     order: { type: Number },
+  //   },
+  // ],
+  stars: { type: Number, default: 0 },
+});
+
+module.exports = mongoose.model('Hotel', hotelSchema);
+
+
+
+
+...................
+
+await Hotel.findOneAndUpdate(
+      { code: hotel.code },
+      {
+        $set: {
+          name: hotel.name?.content || "Unknown Hotel",
+          description,
+          stars: hotel.stars || 0,
+          images: hotel.images || [],
+          facilities: hotel.facilities || []
+        }
+      },
+      { upsert: true, new: true }
+    );
+
+
+
+
+
+
+    <div class="room mt-3">
+            <strong><%= room.description %></strong>
+
+            <% if (room.rates && room.rates.length > 0) { %>
+              <% room.rates.forEach(rate => { %>
+                <div>
+                  <p>
+                    <strong><%= rate.boardName %></strong>
+                    <%= rate.currency %> <%= (parseFloat(rate.net) || 0).toFixed(2) %>
+                    <% if (rate.refundable) { %>
+                      (Refundable)
+                    <% } else { %>
+                      (Non-refundable)
+                    <% } %>
+                  </p>
+
+                  <% if (room.roomFacilities && room.roomFacilities.length > 0) { %>
+                    <h6>Room-specific Facilities:</h6>
+                    <ul>
+                      <% room.roomFacilities.forEach(function(facility) { %>
+                        <li><%= facility %></li>
+                      <% }) %>
+                    </ul>
+                    <% } else { %>
+                      <p>No room-specific facilities listed.</p>
+                  <% } %>
+
+                  <% 
+                    // Find free cancellation deadline and earliest fee-based cancellation
+                    let freeCancellationDeadline = null;
+                    let earliestFeePolicy = null;
+
+                    rate.cancellationPolicies.forEach(policy => {
+                      const amount = parseFloat(policy.amount);
+                      if (amount === 0) {
+                        if (!freeCancellationDeadline || new Date(policy.from) > new Date(freeCancellationDeadline)) {
+                          freeCancellationDeadline = policy.from;
+                        }
+                      }
+                      if (!earliestFeePolicy || new Date(policy.from) < new Date(earliestFeePolicy)) {
+                        earliestFeePolicy = policy.from;
+                      }
+                    });
+
+                    // Determine which date to use as cutoff for paid cancellations
+                    const cutoffDate = freeCancellationDeadline || earliestFeePolicy;
+                  %>
+
+                  <% if (freeCancellationDeadline) { %>
+                    <p><strong>Free cancellation until:</strong> <%= new Date(freeCancellationDeadline).toLocaleString() %></p>
+                  <% } else if (earliestFeePolicy) { %>
+                    <p><strong>Cancellation fee applies after:</strong> <%= new Date(earliestFeePolicy).toLocaleString() %></p>
+                  <% } else { %>
+                    <p>No cancellation fee</p>
+                  <% } %>
+
+                  <% 
+                  // List cancellation fees that apply after the cutoff date
+                  const paidPolicies = rate.cancellationPolicies.filter(policy => {
+                    return new Date(policy.from) >= new Date(cutoffDate) && parseFloat(policy.amount) > 0;
+                  });
+                %>
+
+                <% if (paidPolicies.length > 0) { %>
+                  <p><strong>Cancellation fees after deadline:</strong></p>
+                  <ul>
+                    <% paidPolicies.forEach(policy => { %>
+                      <li>
+                        From <%= new Date(policy.from).toLocaleString() %>: 
+                        <%= rate.currency %> <%= parseFloat(policy.amount).toFixed(2) %>
+                      </li>
+                    <% }) %>
+                  </ul>
+                <% } %>
+
+                  <% if (rate.rateComments) { %>
+                    <p><strong>Rate Comments:</strong> <%= rate.rateComments %></p>
+                  <% } %>
+
+
+                  <% if (rate.offers && rate.offers.length > 0) { %>
+                    <p><strong>Special Offers:</strong></p>
+                    <ul>
+                      <% rate.offers.forEach(offer => { %>
+                        <li><%= offer.name || 'Unnamed offer' %></li>
+                      <% }) %>
+                    </ul>
+                  <% } %>
+
+
+                  <% if (rate.taxes && rate.taxes.length > 0) { %>
+                    <p><strong>Taxes:</strong></p>
+                    <ul>
+                      <% rate.taxes.forEach(tax => { %>
+                        <li>
+                          <%= tax.description || 'Tax' %> - 
+                          <%= tax.amount %> <%= tax.currency %>
+                        </li>
+                      <% }) %>
+                    </ul>
+                  <% } %>
+
+                </div>
+              <% }) %>
+            <% } %>
+          </div>
