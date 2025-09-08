@@ -22,143 +22,22 @@
 
 <body class="container py-5">
   
-<h1 class="page-header-main page-header-cwt" style="text-align:center">Cape Town Highlights 4 Day Package</h1>
-<br>
-<div class="wine-tours-grid-container">
+<h1><%= tour.title %></h1>
+<!-- <img src="" alt="Tour Image" width="530" height="370"> -->
+<p>
+  Pricing from <span class="lrgprice">R <%= tour.price[0] %> pp</span> for 2 people from Cape Town
+  <br>
+  <span class="lrgprice">R <%= tour.price[1] %> pp</span> for 2 people from Stellenbosch
+</p>
 
-    <!-- Tour Image -->
-    <div class="image-container grid-item-1">
-        <img src="/images/winetours/cape-winelands-tour.jpg" alt="Banhoek Valley, Stellenbosch" width="530" height="370">
-    </div> 
+<p><%= tour.description %></p>
 
-    <!-- Tour information -->
-    <div class="tour-info-container grid-item-2">
-        <p style="text-align:center">Pricing from
-            <span class="lrgprice">
-                <br>
-                R 4290 pp
-            </span>
-                <br>
-                for 2 people from Cape Town
-                <br>
-            <span class="lrgprice">
-                R 3790 pp
-            </span>
-                <br>
-                for 2 people from Stellenbosch
-        </p>
+<ul>
+  <% tour.highlights.forEach(function(highlight) { %>
+    <li><%= highlight %></li>
+  <% }); %>
+</ul>
 
-        <p style="text-align:center">Sip, savor, and celebrate the Cape Winelands' most exceptional wines as we take you on a journey through renowned vineyards. Each glass tells a story of tradition, innovation, and terroir, creating a memorable tapestry of flavors that will linger on your palate. <br><br>
-          
-        Join us for an unforgettable exploration of the Cape Winelands, where wine, cheese, chocolate, and fine dining create a harmonious symphony of taste and luxury.
-        </p>
-    </div>
-
-    <!-- Tour Details - Grid item 3 -->
-    <div class="details grid-item-3">
-        <table style="width:100%">
-            <tr>
-              <th style="width:4%"></th>
-              <th style="width:46%">TOUR DETAILS</th>
-            </tr>
-
-            <tr style="text-align:center">
-              <td style="width:4%"><i class="fas fa-map-marker-alt"></i></td>
-              <td style="width:46%">Paarl, Franschhoek and Stellenbosch regions</td>                              
-            </tr>
-
-            <tr style="text-align:center">
-              <td style="width:4%"><i class="far fa-clock"></i></td>
-              <td style="width:46%">Full day wine tour, ± 8 hrs</td>
-            </tr>
-
-            <tr style="text-align:center">
-              <td style="width:4%"><i class="fab fa-font-awesome-flag"></i></td>
-              <td style="width:46%">Available in English & German</td>
-            </tr>          
-
-          </table>
-    </div>
-
-
-    <!-- Highlights - Grid item 4 -->
-    <div class="highlights grid-item-4">
-      <table style="width:100%">
-          <tr>
-            <th style="width:4%"></th>
-            <th style="width:46%">HIGHLIGHTS</th>
-          </tr>
-
-          <tr style="text-align:center">
-            <td style="width:4%"><i class="far fa-sun" style="color:rgb(189, 189, 15)"></i></td>
-            <td style="width:46%">Master cheese & wine pairing at Fairview estate with its rustic charm</td>                                
-          </tr>
-
-          <tr style="text-align:center">
-            <td style="width:4%"><i class="far fa-sun" style="color:rgb(189, 189, 15)"></i></td>
-            <td style="width:46%">Flagship wine tasting at exquisite Anthonij Rupert Wines</td>
-          </tr>
-
-          <tr style="text-align:center">
-            <td style="width:4%"><i class="far fa-sun" style="color:rgb(189, 189, 15)"></i></td>
-            <td style="width:46%">Chocolate & wine pairing at elegant Waterford estate</td> 
-          </tr>
-
-          <tr>
-              <td style="width:4%"><i class="far fa-sun" style="color:rgb(189, 189, 15)"></i></td>
-              <td style="width:46%">Fine dining lunch experience</td>
-          </tr>            
-
-        </table>
-    </div>
-
-    <!-- Included - Grid item 5 -->
-    <div class="included grid-item-5">
-      <table style="width:100%">
-          <tr>
-            <th style="width:4%"></th>
-            <th style="width:46%">INCLUDED</th>
-          </tr>
-
-          <tr style="text-align:center">
-            <td style="width:4%"><i class="fas fa-check-circle" style="color:green"></i></td>
-            <td style="width:46%">Certified professional tour guide</td>                                
-          </tr>
-
-          <tr style="text-align:center">
-            <td style="width:4%"><i class="fas fa-check-circle" style="color:green"></i></td>
-            <td style="width:46%">All wine tasting fees</td>
-          </tr>
-
-          <tr style="text-align:center">
-            <td style="width:4%"><i class="fas fa-check-circle" style="color:green"></i></td>
-            <td style="width:46%">Air conditioned vehicle & fuel</td>
-          </tr>
-
-          <tr style="text-align:center">
-              <td style="width:4%"><i class="fas fa-check-circle" style="color:green"></i></td>
-              <td style="width:46%">Pickup and return to your accommodation</td> 
-            </tr>            
-
-        </table>
-    </div>
-
-  <!-- Excluded - Grid item 6 -->
-  <div class="excluded grid-item-6">
-    <table style="width:100%">
-        <tr>
-          <th style="width:4%"></th>
-          <th style="width:46%">EXCLUDED</th>
-        </tr>
-
-        <tr style="text-align:center">
-          <td style="width:4%"><i class="fas fa-times-circle" style="color:maroon"></i></td>
-          <td style="width:46%">Lunch</td> 
-        </tr>      
-
-      </table>
-  </div>
-</div> 
 
 </body>
 </html>

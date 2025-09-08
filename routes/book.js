@@ -27,7 +27,6 @@ router.post('/book', async (req, res) => {
   
   // ...use rateKey, selected, etc. to build your booking payload...
   
-  //const { rateKey, holder, paxes, clientReference } = req.body;
   // Print rateKey to console for debugging
   console.log('Received rateKey:', rateKey);
 

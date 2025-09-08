@@ -9,7 +9,7 @@ const app = express();
 const PORT = 3000;
 
 // Hardcoded hotel codes
-const HOTEL_CODES = ["26852", "26976"]; 
+const HOTEL_CODES = ["26852", "26976"]; // to be extended
 const BASE_URL = 'https://api.test.hotelbeds.com';
 
 app.set('view engine', 'ejs');
@@ -18,6 +18,8 @@ app.use(express.json());
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', require('./routes/book'));
+const packageToursRouter = require('./routes/packageTours');
+app.use('/', packageToursRouter);
 
 mongoose.connect(process.env.DATABASE_URL, {
 })
@@ -50,6 +52,7 @@ app.post('/search', async (req, res) => {
       const content = contentHotels.find(c => c.code.toString() === hotel.code.toString()) || {};
 
       const name = content.name || hotel.name;
+      
       const description =
         content.description?.content ||
         content.descriptions?.[0]?.content ||
@@ -75,7 +78,6 @@ app.post('/search', async (req, res) => {
         .map(f => f.description?.content)
         .filter(Boolean); // remove undefined/null values
   
-
       const rooms = (hotel.rooms || []).map(room => {
         const dbRoom = content.rooms?.find(r => r.roomCode === room.code);
         
@@ -89,7 +91,6 @@ app.post('/search', async (req, res) => {
         };
       });
 
-
       return {
         code: hotel.code.toString(),
         name,
@@ -98,7 +99,7 @@ app.post('/search', async (req, res) => {
         facilities,
         hotelWideFacilities,
         rooms,
-        price: hotel.price || 'N/A',
+        price: hotel.price || 'N/A',  // minimum rate available at hotel
         currency: hotel.currency || 'ZAR',
         category: hotel.category,
         location: hotel.location,
@@ -156,6 +157,8 @@ async function fetchAvailability(hotelCodes, checkIn, checkOut) {
     }
 
     const data = await response.json();
+
+    // Debugging code
     console.log('Full API response:', JSON.stringify(data, null, 2));
 
     const availability = data.hotels?.hotels || [];

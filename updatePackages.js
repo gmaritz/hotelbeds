@@ -10,7 +10,7 @@ dotenv.config();
     title: "Cape Town Highlights 4 Day Package",
     description: "Sip, savor, and celebrate the Cape Winelands' most exceptional wines...",
     image: ["/images/winetours/cape-winelands-tour.jpg"],
-    price: [4290, 3590, 3290, 2990, 2790, 2590],
+    price: [4290, 4290, 3990, 3690, 3590, 3390],
     regions: ["Paarl", "Franschhoek", "Stellenbosch"],
     duration: "Full day, ± 8 hrs",
     languages: ["English", "German"],

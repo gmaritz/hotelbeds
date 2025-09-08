@@ -1,0 +1,34 @@
+[
+  {
+    "title": "Cape Town Winelands Tour",
+    "description": "Sip, savor, and celebrate the Cape Winelands' most exceptional wines on this immersive tour.",
+    "images": [
+      "/images/winetours/cape-winelands-tour.jpg",
+      "/images/winetours/winery.jpg"
+    ],
+    "priceFromCapeTown": 4290,
+    "priceFromStellenbosch": 3790,
+    "regions": ["Paarl", "Franschhoek", "Stellenbosch"],
+    "duration": "Full day, ± 8 hrs",
+    "languages": ["English", "German"],
+    "highlights": [
+      "Master cheese & wine pairing at Fairview estate",
+      "Flagship wine tasting at Anthonij Rupert Wines",
+      "Chocolate & wine pairing at Waterford estate",
+      "Fine dining lunch experience"
+    ],
+    "included": [
+      "Certified professional tour guide",
+      "All wine tasting fees",
+      "Air conditioned vehicle & fuel",
+      "Pickup and return to your accommodation"
+    ],
+    "excluded": ["Lunch"],
+    "itinerary": [
+      { "day": 1, "activities": ["Arrival", "Welcome dinner"] },
+      { "day": 2, "activities": ["Wine tour", "Cheese tasting"] }
+    ],
+    "rating": 4.8
+  }
+
+]
