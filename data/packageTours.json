@@ -1,13 +1,13 @@
 [
   {
+    "id": "cape-town-highlights-tour-4Day",
     "title": "Cape Town Winelands Tour",
     "description": "Sip, savor, and celebrate the Cape Winelands' most exceptional wines on this immersive tour.",
     "images": [
       "/images/winetours/cape-winelands-tour.jpg",
       "/images/winetours/winery.jpg"
     ],
-    "priceFromCapeTown": 4290,
-    "priceFromStellenbosch": 3790,
+    "price": [4290, 3490, 2690, 1890, 1690, 1490 ],
     "regions": ["Paarl", "Franschhoek", "Stellenbosch"],
     "duration": "Full day, ± 8 hrs",
     "languages": ["English", "German"],
@@ -29,6 +29,36 @@
       { "day": 2, "activities": ["Wine tour", "Cheese tasting"] }
     ],
     "rating": 4.8
+  },
+
+  {
+    "id": "garden-route-tour-7Day",
+    "title": "Garden Route Adventure",
+    "description": "Explore the scenic Garden Route with adventure activities and breathtaking landscapes.",
+    "images": [
+      "/images/gardenroute/garden-route.jpg"
+    ],
+    "price": [4290, 3490, 2690, 1890, 1690, 1490 ],
+    "regions": ["Knysna", "Plettenberg Bay", "Oudtshoorn"],
+    "duration": "3 days, 2 nights",
+    "languages": ["English"],
+    "highlights": [
+      "Tsitsikamma National Park hike",
+      "Knysna lagoon cruise",
+      "Ostrich farm visit"
+    ],
+    "included": [
+      "Accommodation",
+      "Breakfasts",
+      "Transport",
+      "Entrance fees"
+    ],
+    "excluded": ["Lunch", "Dinner"],
+    "itinerary": [
+      { "day": 1, "activities": ["Depart Cape Town", "Knysna lagoon cruise"] },
+      { "day": 2, "activities": ["Tsitsikamma hike", "Ostrich farm visit"] }
+    ],
+    "rating": 4.6
   }
 
 ]

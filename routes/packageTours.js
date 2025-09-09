@@ -1,18 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const PackageTour = require('../models/PackageTour');
-// hypothetical
-// const fetchAvailability = require('../hotelbeds/fetchAvailability'); 
+const fs = require('fs');
+const path = require('path');
 
-router.get('/packages/:id', async (req, res) => {
-  try {
-    const tour = await PackageTour.findById(req.params.id).lean();
-    // const hotels = await fetchAvailability(/* params as needed */);
-
-    res.render('package', { tour });  //hotels
-  } catch (err) {
-    res.status(500).send('Error loading package tour');
-  }
+router.get('/packages/:id', (req, res) => {
+  const jsonPath = path.join(__dirname, '../data/packageTours.json');
+  fs.readFile(jsonPath, 'utf8', (err, data) => {
+    if (err) return res.status(500).send('Error loading package tours');
+    const tours = JSON.parse(data);
+    const tour = tours.find(t => t.id === req.params.id);
+    if (!tour) return res.status(404).send('Package tour not found');
+    res.render('package', { tour });
+  });
 });
 
 module.exports = router;
