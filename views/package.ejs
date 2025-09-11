@@ -6,15 +6,21 @@
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
   <style>
 
-    .hotel {
-      border: 1px solid #ddd;
-      padding: 0.5rem;
-      border-radius: 10px;
-      margin-bottom: 2rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    .swiper-slide img {
+      width: 100%;
+      height: 150px;         /* or any fixed height you prefer */
+      object-fit: cover;     /* ensures images fill the area and are cropped if needed */
+      border-radius: 8px;    /* optional: rounded corners */
+      display: block;
+    }
+
+    /* Make highlights font smaller */
+    .row li {
+      font-size: 0.85rem; /* or use 0.85rem, 14px, etc. as you prefer */
     }
 
   </style>
@@ -22,32 +28,68 @@
 
 <body class="container py-5">
   
-<h1><%= tour.title %></h1>
-<!-- <img src="" alt="Tour Image" width="530" height="370"> -->
-<p>
-  Pricing from <span class="lrgprice">R <%= tour.price[0] %> pp</span> for 2 people from Cape Town
-  <br>
-  <span class="lrgprice">R <%= tour.price[1] %> pp</span> for 2 people from Stellenbosch
-</p>
+<h2 class="text-center"><%= tour.title %></h2><br>
 
-<p><%= tour.description %></p>
+<div class="swiper swiper-<%= tour.id %>">
+  <div class="swiper-wrapper">
+    <% tour.images.forEach(function(img) { %>
+      <div class="swiper-slide">
+        <img src="<%= img %>" alt="Tour image">
+      </div>
+    <% }); %>
+  </div>
+  <div class="swiper-button-next swiper-button-<%= tour.id %>"></div>
+  <div class="swiper-button-prev swiper-button-<%= tour.id %>"></div>
+</div><br>
 
 <ul>
-  <% tour.highlights.forEach(function(highlight) { %>
-    <li><%= highlight %></li>
-  <% }); %>
+<h4 class="text-center">Highlights</h4>
+<div class="row justify-content-center">
+  <div class="col-12 col-md-10 border rounded p-3 mb-4 px-4" style="background: #f8f9fa;">
+    <div class="row">
+      <% tour.highlights.forEach(function(highlight, i) { %>
+        <div class="col-md-3 mb-2">
+          <li><%= highlight %></li>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
 </ul>
 
-<h1>Check Tour Availability</h1>
-  <form action="/search" method="POST">
-    <label>Check-in Date:</label>
-    <input type="date" name="checkIn" required />
-    <br />
-    <label>Check-out Date:</label>
-    <input type="date" name="checkOut" required />
-    <br />
-    <button type="submit">Search</button>
+<div class="d-flex align-items-center mb-3">
+  <h5 class="mb-0 me-3">Search Tour Availability</h5>
+  <form action="/search" method="POST" class="d-flex align-items-center">
+    <label class="me-2">Tour Start Date:</label>
+    <input type="date hidden" name="tourStartDate" id="tourStartDate" required class="me-3" />
+    <button type="submit" class="btn btn-primary">Search</button>
   </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+  const swipers = document.querySelectorAll(".swiper");
+  swipers.forEach((swiperEl) => {
+    const tourId = Array.from(swiperEl.classList)
+      .find(cls => cls.startsWith("swiper-") && cls !== "swiper")
+      ?.replace("swiper-", "");
+    if (!tourId) return;
+    new Swiper(".swiper-" + tourId, {
+      slidesPerView: 3,
+      spaceBetween: 2,
+      navigation: {
+        nextEl: ".swiper-button-" + tourId + ".swiper-button-next",
+        prevEl: ".swiper-button-" + tourId + ".swiper-button-prev",
+      },
+      breakpoints: {
+        768: { slidesPerView: 4, spaceBetween: 2 },
+        1024: { slidesPerView: 5, spaceBetween: 2 }
+      }
+    });
+  });
+});
+</script>
 
 </body>
 </html>

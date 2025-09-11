@@ -1,0 +1,11 @@
+<div class="row mb-4">
+  <div class="col-md-6">
+    <img src="<%= tour.images[0] %>" alt="Tour Image" class="img-fluid" width="530" height="370">
+  </div>
+  <div class="col-md-6">
+    <% tour.description.split('\n\n').forEach(function(paragraph) { %>
+      <p><%= paragraph %></p>
+    <% }); %>
+  </div>
+</div>
+

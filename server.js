@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const path = require('path');
 const mongoose = require('mongoose');
 const Hotel = require('./models/Hotel');
+const { generateSignature } = require('./utils/hotelbeds');
 
 const app = express();
 const PORT = 3000;
@@ -18,14 +19,13 @@ app.use(express.json());
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', require('./routes/book'));
-const packageToursRouter = require('./routes/packageTours');
-app.use('/', packageToursRouter);
+app.use('/', require('./routes/packageTours'));
+app.use('/', require('./routes/packageSearch'));
 
 mongoose.connect(process.env.DATABASE_URL, {
 })
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.error('MongoDB connection error:', err));
-
 
 // Show form to pick dates
 app.get('/', (req, res) => {
@@ -114,16 +114,6 @@ app.post('/search', async (req, res) => {
     res.status(500).send('Something went wrong.');
   }
 });
-
-
-// Generate Hotelbeds signature
-function generateSignature() {
-  const apiKey = process.env.HOTELBEDS_API_KEY.trim();
-  const secret = process.env.HOTELBEDS_SECRET.trim();
-  const timestamp = Math.floor(Date.now() / 1000).toString();
-  const rawSignature = apiKey + secret + timestamp;
-  return crypto.createHash('sha256').update(rawSignature).digest('hex');
-}
 
 // Fetch availability + room info in ZAR
 async function fetchAvailability(hotelCodes, checkIn, checkOut) {

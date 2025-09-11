@@ -6,7 +6,7 @@ const API_KEY = process.env.HOTELBEDS_API_KEY;
 const SECRET = process.env.HOTELBEDS_SECRET;
 
 router.post('/book', async (req, res) => {
-  console.log('Received request body:', req.body); 
+ // console.log('Received request body:', req.body); 
   let bookingData = req.body.bookingData;
   if (!bookingData) {
     return res.status(400).render('bookingError', { errorMessage: 'No booking data received.' });

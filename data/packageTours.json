@@ -1,27 +1,70 @@
 [
   {
-    "id": "cape-town-highlights-tour-4Day",
-    "title": "Cape Town Winelands Tour",
-    "description": "Sip, savor, and celebrate the Cape Winelands' most exceptional wines on this immersive tour.",
+    "id": "best-of-the-cape-4day",
+    "title": "Best of the Cape",
+    "description": "Cape Town, Peninsula & Winelands Explorer (duration 4 days). Discover the best of the Cape in one unforgettable journey.\n\nWelcome to the ultimate introduction to Cape Town and its surrounding wonders. This carefully curated tour is designed for first-time visitors who want to experience the rich history, scenic beauty, and cultural charm of South Africa’s iconic Mother City.\n\nMarvel at Table Mountain, explore the historic Robben Island, and journey to the dramatic tip of Africa at Cape Point. Along the way, encounter the adorable African Penguins at Boulders Beach, cruise along the breathtaking Chapman's Peak Drive, and uncover the naval heritage of Simon’s Town.\n\nBetween June and December, enjoy the unique opportunity to spot Southern Right whales along the coast on your way to Hermanus, renowned as the world’s best land-based whale watching destination.\n\nThe journey continues into the heart of the Cape Winelands, where you’ll visit the picturesque towns of Stellenbosch and Franschhoek. Discover world-class wines, historic estates, and rolling vineyard landscapes – all while enjoying curated tastings and rich storytelling from your guide.\n\nThis tour is the perfect springboard for discovering Cape Town – a captivating blend of natural beauty, wildlife, heritage, and culinary excellence.",
     "images": [
-      "/images/winetours/cape-winelands-tour.jpg",
-      "/images/winetours/winery.jpg"
+      "/images/bestofthecape/houtbay.jpg",
+      "/images/bestofthecape/capepointtour2.jpg",
+      "/images/bestofthecape/capetowncitytour1.jpg",
+      "/images/bestofthecape/capetowncitytour2.jpg",
+      "/images/bestofthecape/capetowncitytour3.jpg",
+      "/images/bestofthecape/capetowncitytour4.jpg",
+      "/images/bestofthecape/capetowncitytour5.jpg",
+      "/images/bestofthecape/capewinetour1.jpg",
+      "/images/bestofthecape/CP5.jpg",
+      "/images/bestofthecape/CP22.jpg",
+      "/images/bestofthecape/CPT7.jpg",
+      "/images/bestofthecape/CPT10.jpg",
+      "/images/bestofthecape/CPT15.jpg",
+      "/images/bestofthecape/CPT16.jpg",
+      "/images/bestofthecape/gardenroutetour2.jpg",
+      "/images/bestofthecape/HER3.jpg",
+      "/images/bestofthecape/HER4.jpg",
+      "/images/bestofthecape/HER5.jpg",
+      "/images/bestofthecape/HER7.jpg",
+      "/images/bestofthecape/hermanustour1.jpg",
+      "/images/bestofthecape/hermanustour2.jpg",
+      "/images/bestofthecape/privatewinetour2.jpg"
     ],
+    "accommodations": [
+    {
+      "hotelCode": "26976",
+      "name": "Cape Town Lodge Hotel",
+      "nights": 2
+    },
+    {
+      "hotelCode": "26852",
+      "name": "Lion Sands River Lodge",
+      "nights": 2
+    }
+  ],
     "price": [4290, 3490, 2690, 1890, 1690, 1490 ],
     "regions": ["Paarl", "Franschhoek", "Stellenbosch"],
     "duration": "Full day, ± 8 hrs",
     "languages": ["English", "German"],
     "highlights": [
-      "Master cheese & wine pairing at Fairview estate",
-      "Flagship wine tasting at Anthonij Rupert Wines",
-      "Chocolate & wine pairing at Waterford estate",
-      "Fine dining lunch experience"
+      "Cape Town City sightseeing",
+      "Visit Table Mountain via cableway",
+      "Visit Robben Island via ferry",
+      "Stellenbosch",
+      "Franschhoek",
+      "Wine tasting in the Cape Winelands",
+      "Kirstenbosch Botanical Gardens",
+      "Picturesque Clarens Drive",
+      "Hermanus",
+      "Walker Bay",
+      "Marine Big Five Tour",
+      "Penguin Colony at Boulders Beach",
+      "Chapman's Peak Drive",
+      "Cape Point",
+      "Visit Cape Point lighthouse via funicular",
+      "Cape of Good Hope Nature Reserve"
     ],
     "included": [
       "Certified professional tour guide",
-      "All wine tasting fees",
-      "Air conditioned vehicle & fuel",
-      "Pickup and return to your accommodation"
+      "All entrance fees and wine tasting fees",
+      "Air conditioned vehicle & fuel"
     ],
     "excluded": ["Lunch"],
     "itinerary": [
