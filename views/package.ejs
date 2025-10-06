@@ -59,12 +59,40 @@
 
 <div class="d-flex align-items-center mb-3">
   <h5 class="mb-0 me-3">Search Tour Availability</h5>
-  <form action="/search" method="POST" class="d-flex align-items-center">
+  <form action="/package-search" method="POST" class="d-flex align-items-center">
+    <input type="hidden" name="tourId" value="<%= tour.id %>" />
     <label class="me-2">Tour Start Date:</label>
-    <input type="date hidden" name="tourStartDate" id="tourStartDate" required class="me-3" />
+    <input type="date" name="tourStartDate" id="tourStartDate" required class="me-3" />
     <button type="submit" class="btn btn-primary">Search</button>
   </form>
 </div>
+
+<% if (typeof results !== 'undefined' && results && results.length > 0) { %>
+  <div class="mt-4">
+    <h4>Availability Results</h4>
+    <% results.forEach(function(result, index) { %>
+      <div class="card mb-3">
+        <div class="card-header">
+          <h5>Stop <%= index + 1 %>: Hotel <%= result.hotelCode %></h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Check-in:</strong> <%= result.checkIn %></p>
+          <p><strong>Check-out:</strong> <%= result.checkOut %></p>
+          <% if (result.hotels && result.hotels.length > 0) { %>
+            <h6>Available Hotels:</h6>
+            <% result.hotels.forEach(function(hotel) { %>
+              <div class="border p-2 mb-2">
+                <strong><%= hotel.name %></strong> - <%= hotel.price %>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <p class="text-muted">No availability data yet (placeholder mode)</p>
+          <% } %>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+<% } %>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script>

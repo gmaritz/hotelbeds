@@ -10,7 +10,7 @@ router.get('/packages/:id', (req, res) => {
     const tours = JSON.parse(data);
     const tour = tours.find(t => t.id === req.params.id);
     if (!tour) return res.status(404).send('Package tour not found');
-    res.render('package', { tour });
+    res.render('package', { tour, results: undefined });
   });
 });
 
