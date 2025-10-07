@@ -2,27 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Package Tour Results</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= tour.title %> - Package Tour</title>
+  
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
   <style>
-
     .swiper-slide img {
       width: 100%;
-      height: 150px;         /* or any fixed height you prefer */
-      object-fit: cover;     /* ensures images fill the area and are cropped if needed */
-      border-radius: 8px;    /* optional: rounded corners */
-      display: block;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
     }
-
-    /* Make highlights font smaller */
-    .row li {
-      font-size: 0.85rem; /* or use 0.85rem, 14px, etc. as you prefer */
-    }
-
+    .hotel { transition: box-shadow 0.3s ease; }
+    .hotel:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .room { border-left: 4px solid #007bff; }
   </style>
 </head>
 
@@ -30,243 +27,249 @@
   
 <h2 class="text-center"><%= tour.title %></h2><br>
 
-<div class="swiper swiper-<%= tour.id %>">
-  <div class="swiper-wrapper">
-    <% tour.images.forEach(function(img) { %>
-      <div class="swiper-slide">
-        <img src="<%= img %>" alt="Tour image">
-      </div>
-    <% }); %>
-  </div>
-  <div class="swiper-button-next swiper-button-<%= tour.id %>"></div>
-  <div class="swiper-button-prev swiper-button-<%= tour.id %>"></div>
-</div><br>
-
-<ul>
-<h4 class="text-center">Highlights</h4>
-<div class="row justify-content-center">
-  <div class="col-12 col-md-10 border rounded p-3 mb-4 px-4" style="background: #f8f9fa;">
-    <div class="row">
-      <% tour.highlights.forEach(function(highlight, i) { %>
-        <div class="col-md-3 mb-2">
-          <li><%= highlight %></li>
+<!-- Tour Images -->
+<% if (tour.images && tour.images.length > 0) { %>
+  <div class="swiper swiper-tour mb-4">
+    <div class="swiper-wrapper">
+      <% tour.images.forEach(function(img) { %>
+        <div class="swiper-slide">
+          <img src="<%= img %>" alt="Tour image">
         </div>
       <% }); %>
     </div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+<% } %>
+
+<!-- Highlights -->
+<h4 class="text-center">Highlights</h4>
+<div class="row justify-content-center mb-4">
+  <div class="col-12 col-md-10 border rounded p-3" style="background: #f8f9fa;">
+    <div class="row">
+      <% if (tour.highlights && tour.highlights.length > 0) { %>
+        <% tour.highlights.forEach(function(highlight) { %>
+          <div class="col-md-3 mb-2">
+            <li><%= highlight %></li>
+          </div>
+        <% }); %>
+      <% } %>
+    </div>
   </div>
 </div>
-</ul>
 
+<!-- Search Form -->
 <div class="d-flex align-items-center mb-3">
   <h5 class="mb-0 me-3">Search Tour Availability</h5>
   <form action="/package-search" method="POST" class="d-flex align-items-center">
-    <input type="hidden" name="tourId" value="<%= tour.id %>" />
+    <input type="hidden" name="tourId" value="<%= tour.id %>">
     <label class="me-2">Tour Start Date:</label>
-    <input type="date" name="tourStartDate" id="tourStartDate" required class="me-3" />
+    <input type="date" name="tourStartDate" required class="me-3">
     <button type="submit" class="btn btn-primary">Search</button>
   </form>
 </div>
 
+<!-- Results -->
 <% if (typeof results !== 'undefined' && results && results.length > 0) { %>
   <div class="mt-4">
-    <h4>Availability Results</h4>
-    <% results.forEach(function(result, index) { %>
-      <div class="card mb-3">
-        <div class="card-header">
-          <h5>Stop <%= index + 1 %>: Hotel <%= result.hotelCode %></h5>
-        </div>
-        <div class="card-body">
-          <p><strong>Check-in:</strong> <%= result.checkIn %></p>
-          <p><strong>Check-out:</strong> <%= result.checkOut %></p>
-          <% if (result.hotels && result.hotels.length > 0) { %>
-            <h6>Available Hotels:</h6>
-            <% result.hotels.forEach(function(hotel, hotelIndex) { %>
-              <div class="border p-3 mb-3">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <div>
-                    <strong><%= hotel.name %></strong> - <%= hotel.categoryName %>
-                    <br><small class="text-muted"><%= hotel.destinationName %></small>
-                  </div>
-                </div>
-                
-                <% if (hotel.images && hotel.images.length > 0) { %>
-                  <div class="swiper swiper-hotel-<%= index %>-<%= hotelIndex %> mb-3">
-                    <div class="swiper-wrapper">
-                      <% hotel.images.forEach(function(img) { %>
-                        <% if (img.path) { %>
-                          <div class="swiper-slide">
-                            <img src="https://photos.hotelbeds.com/giata/<%= img.path %>" alt="Hotel image" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px;">
-                          </div>
-                        <% } %>
-                      <% }); %>
-                    </div>
-                    <div class="swiper-button-next swiper-button-hotel-<%= index %>-<%= hotelIndex %>"></div>
-                    <div class="swiper-button-prev swiper-button-hotel-<%= index %>-<%= hotelIndex %>"></div>
-                  </div>
-                <% } %>
-                
-                <% if (hotel.hotelWideFacilities && hotel.hotelWideFacilities.length > 0) { %>
-                  <div class="mb-3">
-                    <h6>Hotel Facilities:</h6>
-                    <div class="row">
-                      <% hotel.hotelWideFacilities.forEach(function(facility) { %>
-                        <div class="col-md-6 mb-1">
-                          <small class="text-muted">• <%= facility %></small>
-                        </div>
-                      <% }); %>
-                    </div>
-                  </div>
-                <% } %>
-                
-                <% if (hotel.rooms && hotel.rooms.length > 0) { %>
-                  <h6>Available Rooms:</h6>
-                  <% hotel.rooms.forEach(function(room) { %>
-                    <div class="bg-light p-3 mb-3 rounded">
-                      <h6 class="text-primary"><%= room.description %></h6>
-                      
-                      <% if (room.roomFacilities && room.roomFacilities.length > 0) { %>
-                        <div class="mb-2">
-                          <small class="text-muted">
-                            <strong>Room Facilities:</strong> <%= room.roomFacilities.join(', ') %>
-                          </small>
-                        </div>
-                      <% } %>
-                      
-                      <% if (room.rates && room.rates.length > 0) { %>
-                        <% room.rates.forEach(function(rate, rateIndex) { %>
-                          <%
-                            // Precompute cancellation logic
-                            let freeCancellationDeadline = null;
-                            let earliestFeePolicy = null;
-                            if (rate.cancellationPolicies) {
-                              rate.cancellationPolicies.forEach(policy => {
-                                const amount = parseFloat(policy.amount);
-                                if (amount === 0) {
-                                  if (!freeCancellationDeadline || new Date(policy.from) > new Date(freeCancellationDeadline)) {
-                                    freeCancellationDeadline = policy.from;
-                                  }
-                                }
-                                if (!earliestFeePolicy || new Date(policy.from) < new Date(earliestFeePolicy)) {
-                                  earliestFeePolicy = policy.from;
-                                }
-                              });
-                            }
-                            const cutoffDate = freeCancellationDeadline || earliestFeePolicy;
-                            const paidPolicies = rate.cancellationPolicies?.filter(policy =>
-                              new Date(policy.from) >= new Date(cutoffDate) && parseFloat(policy.amount) > 0
-                            );
-                          %>
-                          
-                          <div class="border p-2 mb-2 rounded bg-white">
-                            <div class="d-flex justify-content-between align-items-center">
-                              <div>
-                                <strong><%= rate.boardName %></strong>
-                                <% if (rate.refundable) { %>
-                                  <span class="badge bg-success ms-2">Refundable</span>
-                                <% } else { %>
-                                  <span class="badge bg-danger ms-2">Non-refundable</span>
-                                <% } %>
-                              </div>
-                              <span class="fw-bold text-primary"><%= rate.currency %> <%= parseFloat(rate.net).toFixed(2) %></span>
+    <h4>Tour Accommodation Search Results</h4>
+    
+    <form id="package-form" method="POST" action="/book">
+      <input type="hidden" name="bookingData" id="bookingData">
+      
+      <% results.forEach(function(result, stopIndex) { %>
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Stop <%= result.stopNumber %>: <%= result.location %> (<%= result.checkIn %> to <%= result.checkOut %>)</h5>
+          </div>
+          <div class="card-body">
+            <% if (result.hotels && result.hotels.length > 0) { %>
+              
+              <% result.hotels.forEach(function(hotel, hotelIndex) { %>
+                <div class="hotel border p-4 rounded mb-4 bg-light">
+                  <h4 class="text-primary"><%= hotel.name %></h4>
+                  <% if (hotel.description) { %>
+                    <p><%= hotel.description %></p>
+                  <% } %>
+                  
+                  <!-- Hotel Images -->
+                  <% if (hotel.images && hotel.images.length > 0) { %>
+                    <div class="swiper swiper-hotel-<%= stopIndex %>-<%= hotelIndex %> mb-3">
+                      <div class="swiper-wrapper">
+                        <% hotel.images.forEach(function(img) { %>
+                          <% if (img.path) { %>
+                            <div class="swiper-slide">
+                              <img src="https://photos.hotelbeds.com/giata/<%= img.path %>" alt="Hotel image" style="height: 120px; object-fit: cover;">
                             </div>
-                            
-                            <% if (freeCancellationDeadline) { %>
-                              <small class="text-success d-block mt-1">
-                                <i class="fas fa-check-circle"></i> <strong>Free cancellation until:</strong> <%= new Date(freeCancellationDeadline).toLocaleString() %>
-                              </small>
-                            <% } else if (earliestFeePolicy) { %>
-                              <small class="text-warning d-block mt-1">
-                                <i class="fas fa-exclamation-triangle"></i> <strong>Cancellation fee applies after:</strong> <%= new Date(earliestFeePolicy).toLocaleString() %>
-                              </small>
-                            <% } %>
-                            
-                            <% if (paidPolicies && paidPolicies.length > 0) { %>
-                              <div class="mt-2">
-                                <small class="text-muted"><strong>Cancellation fees:</strong></small>
-                                <% paidPolicies.forEach(function(policy) { %>
-                                  <small class="d-block text-muted ms-2">
-                                    From <%= new Date(policy.from).toLocaleString() %>: <%= rate.currency %> <%= parseFloat(policy.amount).toFixed(2) %>
-                                  </small>
-                                <% }); %>
-                              </div>
-                            <% } %>
-                          </div>
+                          <% } %>
                         <% }); %>
-                      <% } %>
+                      </div>
+                      <div class="swiper-button-next"></div>
+                      <div class="swiper-button-prev"></div>
+                    </div>
+                  <% } %>
+                  
+                  <!-- Rooms -->
+<% if (hotel.rooms && hotel.rooms.length > 0) { %>
+  <% hotel.rooms.forEach(function(room, roomIndex) { %>
+    <div class="room mt-4 p-3 border rounded bg-white">
+      <h5 class="text-primary"><%= room.description %></h5>
+
+      <% if (room.rates && room.rates.length > 0) { %>
+        <% room.rates.forEach(function(rate, rateIndex) { %>
+          <div class="form-check mb-3">
+            <input 
+              class="form-check-input package-checkbox" 
+              type="checkbox" 
+              name="selectedRate" 
+              id="rate-<%= stopIndex %>-<%= hotelIndex %>-<%= roomIndex %>-<%= rateIndex %>"
+              data-stop="<%= stopIndex %>"
+              value='<%- JSON.stringify({
+                stopIndex: stopIndex,
+                hotelCode: hotel.code,
+                hotelName: hotel.name,
+                roomCode: room.code,
+                roomName: room.description,
+                boardName: rate.boardName,
+                rateKey: rate.rateKey,
+                net: rate.net,
+                currency: rate.currency,
+                checkIn: result.checkIn,
+                checkOut: result.checkOut
+              }) %>'>
+
+            <label class="form-check-label w-100" for="rate-<%= stopIndex %>-<%= hotelIndex %>-<%= roomIndex %>-<%= rateIndex %>">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <strong><%= rate.boardName %></strong>
+                  <% if (rate.refundable) { %>
+                    <span class="badge bg-success ms-2">Refundable</span>
+                  <% } else { %>
+                    <span class="badge bg-danger ms-2">Non-refundable</span>
+                  <% } %>
+                </div>
+                <div>
+                  <strong class="text-success"><%= rate.currency %> <%= parseFloat(rate.net).toFixed(2) %></strong>
+                </div>
+              </div>
+            </label>
+
+            <!-- Room Facilities -->
+            <% if (room.roomFacilities && room.roomFacilities.length > 0) { %>
+              <div class="mt-2">
+                <h6 class="small text-muted">Room Facilities:</h6>
+                <div class="row">
+                  <% room.roomFacilities.forEach(function(facility) { %>
+                    <div class="col-md-6">
+                      <small class="text-muted">• <%= facility %></small>
                     </div>
                   <% }); %>
-                <% } %>
+                </div>
               </div>
-            <% }); %>
-          <% } else { %>
-            <p class="text-muted">No availability data yet (placeholder mode)</p>
-          <% } %>
+            <% } %>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <p class="text-muted">No rates available.</p>
+      <% } %>
+    </div>
+  <% }); %>
+<% } %>
+
+
+                  <!-- Hotel Facilities -->
+                  <% if (hotel.hotelWideFacilities && hotel.hotelWideFacilities.length > 0) { %>
+                    <div class="mt-4 p-3 border rounded" style="background-color: #f8f9fa;">
+                      <h6 class="text-primary mb-3">
+                        <i class="fas fa-star me-2"></i><%= hotel.name %> - Hotel Facilities:
+                      </h6>
+                      <div class="row">
+                        <% hotel.hotelWideFacilities.forEach(function(facility) { %>
+                          <div class="col-md-6 mb-2">
+                            <small class="text-muted">
+                              <i class="fas fa-check-circle text-success me-1"></i><%= facility %>
+                            </small>
+                          </div>
+                        <% }); %>
+                      </div>
+                    </div>
+                  <% } %>
+
+                </div>
+              <% }); %>
+            <% } else { %>
+              <p class="text-muted">No accommodation available.</p>
+            <% } %>
+          </div>
         </div>
+      <% }); %>
+      
+      <div class="text-center mt-4">
+        <button type="button" class="btn btn-success btn-lg" onclick="submitSelection()">
+          <i class="fas fa-shopping-cart me-2"></i>Book Selected Package
+        </button>
       </div>
-    <% }); %>
+    </form>
   </div>
 <% } %>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 <script>
-function initializeSwiper() {
-  const swipers = document.querySelectorAll(".swiper");
-  swipers.forEach((swiperEl) => {
-    // Destroy existing swiper instance if it exists
-    if (swiperEl.swiper) {
-      swiperEl.swiper.destroy(true, true);
-    }
-    
-    // Handle main tour swiper
-    const tourId = Array.from(swiperEl.classList)
-      .find(cls => cls.startsWith("swiper-") && cls !== "swiper" && !cls.startsWith("swiper-hotel"))
-      ?.replace("swiper-", "");
-    
-    if (tourId) {
-      new Swiper(".swiper-" + tourId, {
-        slidesPerView: 3,
-        spaceBetween: 2,
-        navigation: {
-          nextEl: ".swiper-button-" + tourId + ".swiper-button-next",
-          prevEl: ".swiper-button-" + tourId + ".swiper-button-prev",
-        },
-        breakpoints: {
-          768: { slidesPerView: 4, spaceBetween: 2 },
-          1024: { slidesPerView: 5, spaceBetween: 2 }
-        }
-      });
-    }
-    
-    // Handle hotel swiper
-    const hotelClass = Array.from(swiperEl.classList)
-      .find(cls => cls.startsWith("swiper-hotel-"));
-    
-    if (hotelClass) {
-      new Swiper("." + hotelClass, {
-        slidesPerView: 2,
-        spaceBetween: 10,
-        navigation: {
-          nextEl: ".swiper-button-" + hotelClass.replace("swiper-", "") + ".swiper-button-next",
-          prevEl: ".swiper-button-" + hotelClass.replace("swiper-", "") + ".swiper-button-prev",
-        },
-        breakpoints: {
-          768: { slidesPerView: 3, spaceBetween: 10 },
-          1024: { slidesPerView: 4, spaceBetween: 10 }
-        }
-      });
+// Initialize Swipers
+document.addEventListener("DOMContentLoaded", function() {
+  // Tour swiper
+  new Swiper('.swiper-tour', {
+    slidesPerView: 2,
+    spaceBetween: 10,
+    navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+    breakpoints: { 768: { slidesPerView: 3 }, 1024: { slidesPerView: 4 } }
+  });
+
+  // Hotel swipers
+  document.querySelectorAll('[class*="swiper-hotel-"]').forEach(function(swiper) {
+    new Swiper(swiper, {
+      slidesPerView: 2,
+      spaceBetween: 10,
+      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+      breakpoints: { 768: { slidesPerView: 3 }, 1024: { slidesPerView: 4 } }
+    });
+  });
+
+  // Checkbox logic
+  document.querySelectorAll('.package-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+      var stop = this.dataset.stop;
+      if (this.checked) {
+        document.querySelectorAll('.package-checkbox').forEach(function(cb) {
+          if (cb.dataset.stop === stop && cb !== checkbox) {
+            cb.checked = false;
+          }
+        });
+      }
+    });
+  });
+});
+
+function submitSelection() {
+  var selected = [];
+  document.querySelectorAll('.package-checkbox:checked').forEach(function(cb) {
+    try {
+      selected.push(JSON.parse(cb.value));
+    } catch(e) {
+      console.error('Parse error:', e);
     }
   });
-}
 
-// Initialize on page load
-document.addEventListener("DOMContentLoaded", initializeSwiper);
+  if (selected.length === 0) {
+    alert('Please select accommodation for your package.');
+    return;
+  }
 
-// Also initialize immediately after DOM is ready (for page refreshes after form submissions)
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeSwiper);
-} else {
-  // DOM is already loaded
-  initializeSwiper();
+  // For now, just book the first selection
+  document.getElementById('bookingData').value = JSON.stringify(selected[0]);
+  document.getElementById('package-form').submit();
 }
 </script>
 

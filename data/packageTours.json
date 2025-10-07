@@ -25,16 +25,50 @@
       "/images/bestofthecape/kogelbaybeach.jpg",
       "/images/bestofthecape/capewinelands.jpg"
     ],
-    "accommodations": [
+     "accommodations": [
     {
-      "hotelCode": "26976",
-      "name": "Cape Town Lodge Hotel",
-      "nights": 2
+      "stopNumber": 1,
+      "location": "Cape Town City Center",
+      "nights": 2,
+      "hotelOptions": [
+        {
+          "hotelCode": "26976",
+          "name": "Cape Town Lodge Hotel",
+          "category": "4-star"
+        },
+        {
+          "hotelCode": "26981",
+          "name": "The Twelve Apostles Hotel",
+          "category": "4-star"
+        },
+        {
+          "hotelCode": "26996",
+          "name": "Cape Milner",
+          "category": "5-star"
+        }
+      ]
     },
     {
-      "hotelCode": "26852",
-      "name": "Lion Sands River Lodge",
-      "nights": 2
+      "stopNumber": 2,
+      "location": "Cape Winelands",
+      "nights": 2,
+      "hotelOptions": [
+        {
+          "hotelCode": "205183",
+          "name": "The Whale Coast All Suite Hotel",
+          "category": "4-star"
+        },
+        {
+          "hotelCode": "161818",
+          "name": "Harbour House Hotel",
+          "category": "5-star"
+        },
+        {
+          "hotelCode": "126006",
+          "name": "The Cellars-Hohenort",
+          "category": "4-star"
+        }
+      ]
     }
   ],
     "price": [4290, 3490, 2690, 1890, 1690, 1490 ],
