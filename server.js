@@ -21,6 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', require('./routes/book'));
 app.use('/', require('./routes/packageTours'));
 app.use('/', require('./routes/packageSearch'));
+app.use('/', require('./routes/tours'));
 
 mongoose.connect(process.env.DATABASE_URL, {
 })

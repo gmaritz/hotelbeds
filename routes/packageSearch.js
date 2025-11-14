@@ -6,9 +6,47 @@ const { fetchAvailability } = require('../services/fetchAvailability');
 const Hotel = require('../models/Hotel');
 
 router.post('/package-search', async (req, res) => {
-  const { tourId, tourStartDate } = req.body;
+  const { tourId, tourStartDate, adults, children } = req.body;
 
   try {
+    // Extract child ages from form data
+    const childAges = [];
+    const childrenCount = parseInt(children) || 0;
+    
+    for (let i = 1; i <= childrenCount; i++) {
+      const childAge = req.body[`childAge${i}`];
+      if (childAge) {
+        childAges.push(parseInt(childAge));
+      }
+    }
+    
+    // Build pax array for API
+    const paxes = [];
+    
+    // Add adults
+    const adultsCount = parseInt(adults) || 2;
+    for (let i = 0; i < adultsCount; i++) {
+      paxes.push({
+        type: "AD",
+        age: 30
+      });
+    }
+    
+    // Add children
+    childAges.forEach(age => {
+      paxes.push({
+        type: "CH",
+        age: age
+      });
+    });
+
+    console.log('Passenger configuration:', {
+      adults: adultsCount,
+      children: childrenCount,
+      childAges: childAges,
+      paxes: paxes
+    });
+
     // Load package tour data from JSON
     const toursData = fs.readFileSync(path.join(__dirname, '../data/packageTours.json'), 'utf8');
     const tours = JSON.parse(toursData);
@@ -47,11 +85,12 @@ router.post('/package-search', async (req, res) => {
         hotelCodes: hotelCodes,
         nights: accommodation.nights,
         checkIn: checkIn.toISOString().slice(0, 10),
-        checkOut: checkOut.toISOString().slice(0, 10)
+        checkOut: checkOut.toISOString().slice(0, 10),
+        paxes: paxes // Add passenger info to each stay request
       });
     });
 
-    console.log('Stay requests:', stayRequests);
+    console.log('Stay requests with pax data:', stayRequests);
 
     // Fetch availability for each stop
     const results = [];
@@ -59,9 +98,10 @@ router.post('/package-search', async (req, res) => {
       try {
         console.log(`\n--- STOP ${stay.stopNumber}: ${stay.location} ---`);
         console.log(`Fetching availability for hotels ${stay.hotelCodes.join(', ')} from ${stay.checkIn} to ${stay.checkOut}`);
+        console.log(`Passenger configuration:`, stay.paxes);
         
-        // Fetch live availability from Hotelbeds API for all hotels in this stop
-        const availability = await fetchAvailability(stay.hotelCodes, stay.checkIn, stay.checkOut);
+        // Fetch live availability from Hotelbeds API with passenger info
+        const availability = await fetchAvailability(stay.hotelCodes, stay.checkIn, stay.checkOut, stay.paxes);
         console.log(`API returned ${availability.length} hotels for stop ${stay.stopNumber}`);
 
         if (!availability || availability.length === 0) {
@@ -183,21 +223,19 @@ router.post('/package-search', async (req, res) => {
     });
 
     // Render package.ejs with tour info and results
-    res.render('package', { tour, results });
+res.render('package', { 
+  tour, 
+  results,
+  searchParams: {
+    adults: adultsCount,
+    children: childrenCount,
+    childAges: childAges
+  }
+});
 
   } catch (error) {
     console.error('Error in package search:', error);
     res.status(500).send('Error loading package tour data');
-  }
-});
-
-// Debug route to check hotels in database
-router.get('/debug-hotels', async (req, res) => {
-  try {
-    const hotels = await Hotel.find({}, 'code name').limit(10);
-    res.json(hotels.map(h => ({ code: h.code, name: h.name })));
-  } catch (error) {
-    res.json({ error: error.message });
   }
 });
 

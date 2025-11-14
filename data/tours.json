@@ -1,0 +1,52 @@
+[
+  {
+    "id": "cape-peninsula",
+    "name": "Cape Peninsula Tour",
+    "description": "Experience Cape Town’s most scenic drive and iconic landmarks.",
+    "stops": [
+      {
+        "name": "Table Mountain",
+        "lat": -33.9628,
+        "lng": 18.4098,
+        "description": "Panoramic views of Cape Town."
+      },
+      {
+        "name": "Boulders Beach",
+        "lat": -34.1964,
+        "lng": 18.451,
+        "description": "Visit the African penguin colony."
+      },
+      {
+        "name": "Cape Point",
+        "lat": -34.3568,
+        "lng": 18.4963,
+        "description": "Explore the tip of the Cape Peninsula."
+      }
+    ]
+  },
+  {
+    "id": "stellenbosch-winelands",
+    "name": "Stellenbosch Winelands Tour",
+    "description": "Taste some of the Cape’s finest wines and enjoy picturesque vineyards.",
+    "stops": [
+      {
+        "name": "Tokara Wine Estate",
+        "lat": -33.9263,
+        "lng": 18.9055,
+        "description": "Award-winning wines and stunning views."
+      },
+      {
+        "name": "Delaire Graff Estate",
+        "lat": -33.9286,
+        "lng": 18.9104,
+        "description": "Luxury estate known for fine dining and art."
+      },
+      {
+        "name": "Spier Wine Farm",
+        "lat": -33.9794,
+        "lng": 18.7586,
+        "description": "Historic wine farm with tasting and craft markets."
+      }
+    ]
+  }
+]
