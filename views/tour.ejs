@@ -3,48 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="<%= tour.description %>">
   <title><%= tour.name %> | Go Cape Tours</title>
 
+  <!-- Preload critical resources -->
+  <link rel="preload" href="https://unpkg.com/leaflet/dist/leaflet.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="/js/maps/tourMapConfig.js" as="script">
+  
   <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <noscript><link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"></noscript>
+  
+  <!-- Custom Map CSS -->
+  <link rel="stylesheet" href="/css/maps/mapStyles.css">
+  
+  <!-- Inline critical CSS for map container -->
   <style>
-    #map {
-      height: 500px;
-      width: 100%;
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      margin: 20px; 
+      line-height: 1.6;
+    }
+    h1 { 
+      color: #2c3e50; 
+      margin-bottom: 10px; 
+    }
+    .map-square { 
+      height: 400px !important;
+      width: 400px !important; 
+      margin: 20px auto;
       border-radius: 12px;
-      margin-top: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
   </style>
 </head>
 <body>
-  <h1><%= tour.name %></h1>
-  <p><%= tour.description %></p>
+  <header>
+    <h1><%= tour.name %></h1>
+    <p><%= tour.description %></p>
+  </header>
 
-  <div id="map"></div>
+  <main>
+    <!-- 400x400 Google Hybrid Map with Tour Stops -->
+    <div id="map" class="map-square" role="img" aria-label="Interactive map showing <%= tour.name %> stops"></div>
+  </main>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Load scripts at bottom for better performance -->
   <script>
-    const stops = <%- JSON.stringify(tour.stops) %>;
-
-    if (stops.length) {
-      const map = L.map('map').setView([stops[0].lat, stops[0].lng], 10);
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-
-      const bounds = [];
-
-      stops.forEach(stop => {
-        const marker = L.marker([stop.lat, stop.lng]).addTo(map);
-        marker.bindPopup(`<b>${stop.name}</b><br>${stop.description || ''}`);
-        bounds.push([stop.lat, stop.lng]);
-      });
-
-      if (bounds.length > 1) map.fitBounds(bounds);
-    } else {
-      document.getElementById('map').innerHTML = 'No stops available for this tour.';
+    // Inline tour data to avoid extra variable declaration
+    window.tourStops = <%- JSON.stringify(tour.stops) %>;
+  </script>
+  
+  <!-- Load Leaflet asynchronously -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
+  
+  <!-- Initialize map after Leaflet loads -->
+  <script src="/js/maps/tourMapConfig.js" defer onload="initTourMap()"></script>
+  
+  <script>
+    function initTourMap() {
+      // Wait for DOM to be ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', createMap);
+      } else {
+        createMap();
+      }
+    }
+    
+    function createMap() {
+      if (typeof TourMap !== 'undefined' && window.tourStops) {
+        const tourMap = new TourMap('map', window.tourStops, {
+          zoom: 12
+        });
+      }
     }
   </script>
 </body>

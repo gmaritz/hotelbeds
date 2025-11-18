@@ -1,0 +1,114 @@
+/* Map Container Styles - Various Sizes */
+.map-container {
+  position: relative;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+#map {
+  height: 500px;
+  width: 100%;
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+/* Map size - 400x400 square */
+.map-square {
+  height: 400px !important;
+  width: 400px !important;
+  margin: 0 auto;
+}
+
+/* Responsive map sizing */
+@media (max-width: 480px) {
+  .map-square {
+    height: 300px !important;
+    width: 300px !important;
+  }
+}
+
+/* Leaflet Popup Customization */
+.leaflet-popup-content {
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 8px 12px;
+}
+
+.leaflet-popup-content h3 {
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+  font-size: 16px;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+}
+
+.leaflet-popup-tip {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Custom Marker Styles */
+.custom-marker {
+  background-color: #ff6b35;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.custom-marker:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+/* Map Controls */
+.leaflet-control-zoom a {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  color: #333;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: #f4f4f4;
+}
+
+/* Attribution styling */
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 11px;
+}
+
+/* Custom tooltip styling for hover */
+.custom-tooltip {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 6px 10px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.custom-tooltip:before {
+  border-top-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Tour stop number styling */
+.stop-number {
+  background-color: #ff6b35;
+  color: white;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  margin: 0 auto 5px auto;
+}
